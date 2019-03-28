@@ -1,5 +1,5 @@
 locals {
-  alpines = [for host in var.network: host if host.type == "alpine"]
+  alpines = local.devices["alpine"]
 }
 
 resource "vsphere_virtual_machine" "alpine" {

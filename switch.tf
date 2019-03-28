@@ -1,5 +1,5 @@
 locals {
-  vlans = [0, 1]
+  vlans = distinct(flatten([var.network.*.vlan_ids]))
 }
 
 resource "vsphere_host_virtual_switch" "switch" {
