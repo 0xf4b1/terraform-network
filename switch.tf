@@ -14,7 +14,7 @@ resource "vsphere_host_virtual_switch" "switch" {
 
 resource "vsphere_host_port_group" "pg" {
   count               = length(local.vlans)
-  name                = "vlan-${local.vlans[count.index]}"
+  name                = "${var.namespace}-vlan-${local.vlans[count.index]}"
   host_system_id      = "${data.vsphere_host.host.id}"
   virtual_switch_name = "${vsphere_host_virtual_switch.switch.name}"
   vlan_id = local.vlans[count.index]
@@ -23,3 +23,11 @@ resource "vsphere_host_port_group" "pg" {
   ]
 }
 
+data "vsphere_network" "network" {
+  count         = length(local.vlans)
+  name          = "${var.namespace}-vlan-${local.vlans[count.index]}"
+  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+  depends_on = [
+    vsphere_host_port_group.pg
+  ]
+}

@@ -28,7 +28,7 @@ resource "vsphere_virtual_machine" "alpine" {
     for_each = local.alpines[count.index].vlan_ids
 
     content {
-      network_id = network_interface.value
+      network_id = data.vsphere_network.network[network_interface.value].id
     }
   }
 
@@ -36,7 +36,8 @@ resource "vsphere_virtual_machine" "alpine" {
   wait_for_guest_net_routable = false
 
   depends_on = [
-    vsphere_host_port_group.pg
+    vsphere_host_port_group.pg,
+    data.vsphere_network.network
   ]
 }
 
